@@ -125,7 +125,7 @@ var resultsPage = {
     viewUserName: document.createElement("input"),
 
     showResults: function (userScore) {
-        
+        clearPageElements();
         responseOfPage.innerHTML = " ";
         viewHighScoreLink.showHighScoreLink();
         viewTimer.showTimer("00:00");
@@ -197,7 +197,7 @@ var highScorePage = {
 
 var executeQuiz = function(userAnswered)
 {
-    if (timerVal > 0 && quesNum < currentQuestion.length)
+    while (timerVal > 0 && quesNum < currentQuestion.length)
     {
         if (userAnswered === currentAnswer[quesNum])
         {   
@@ -211,18 +211,8 @@ var executeQuiz = function(userAnswered)
             timerVal-=10;
         }
         quesNum++;
-        quizPage.showQuestion(currentQuestion[quesNum],currentAnswersList[quesNum]);
+        return 0;
     }
-    else if ( timerVal <= 0 && quesNum >= currentQuestion.length)
-    {
-        timerVal = 50;
-        quesNum = 0;
-        resultsPage.showResults(score);
-        resultsPage.enterName(name);
-    }
-    console.log(timerVal+" "+quesNum);
-    
-
     // if main page is shown timer is set to beginning
     //Quiz questions and answers are stored in objects
 }
@@ -257,7 +247,14 @@ var startButtonHandler = function (event) {
 var quizAnswerHandler = function (event) {
     if (event.target.matches(".answer-button"))
     {
-       executeQuiz((event.target.textContent).toString());
+        executeQuiz((event.target.textContent).toString());
+        if (quesNum  >= currentQuestion.length)
+        {
+            timerVal = 50;
+            quesNum = 0;
+            resultsPage.showResults(score);
+            resultsPage.enterName(name); }
+        else { quizPage.showQuestion(currentQuestion[quesNum],currentAnswersList[quesNum]); }
     }
 }
 
