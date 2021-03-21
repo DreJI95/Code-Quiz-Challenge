@@ -23,7 +23,8 @@ This application will allow a user to test their knowledge on JavasScript fundam
 - THEN I can save my initials and score
 
 **References:** 
-
+For In function - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in
+How to clear textContent - https://stackoverflow.com/questions/22569678/how-to-change-textcontent-via-javascript
 
 **Live webpage link:** 
 

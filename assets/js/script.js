@@ -1,19 +1,45 @@
 var headerOfPage = document.querySelector(".page-title");
 var mainOfPage = document.querySelector(".page-content");
+var responseOfPage = document.querySelector(".page-response");
 
-var questionItem = ""; //holds question
-var answerListItem = ["one","two","three","four"]; //holds answers list
-var response = [true,false,null]; //holds answer response
+// Clear page elements
+var clearPageElements = function () {
+    headerOfPage.innerHTML = "";
+    mainOfPage.innerHTML = "";
+}
+
+var listOfQuestionsAnswers = [
+{ question:"What day is it?", answerList:["Monday","Tuesday","Wednesday","Sunday"], answer:"Sunday"},
+{ question:"What year is it?", answerList:["2018","2019","2020","2021"], answer:"2021"},
+{ question:"What month is it?", answerList:["Jan","Feb","Mar","Apr"], answer:"Mar"}, 
+{ question:"What is the fourth letter of the alphabet?", answerList:["a","b","c","d"], answer:"d"},
+{ question:"What is hour 14 on a 24 hour clock mean?", answerList:["1pm","2pm","3pm","4pm"], answer:"2pm"}]
+ 
+//-------------------
+var currentQuestion = []; //holds current question
+var currentAnswersList = []; //holds current answers list
+var currentAnswer = []; //holds current answer
+
+for (const arrEl in listOfQuestionsAnswers)
+{
+    currentQuestion.push(listOfQuestionsAnswers[arrEl].question);
+    currentAnswersList.push(listOfQuestionsAnswers[arrEl].answerList);
+    currentAnswer.push(listOfQuestionsAnswers[arrEl].answer);
+}
+//----------------
+
 var score = 0;
 var name = "Andre";
 var scoreList = [""];
+var timerVal = 50;
+var quesNum = 0;
 
 //creates HTML page element of the View High Score link
 var viewHighScoreLink = 
 {
     showHighScoreLink: function() { 
         var viewHighScoreLink = document.createElement("div");
-        viewHighScoreLink.innerHTML = "<a href=#link-to-high-score class=\"view-high-score\">View High Scores</a>";
+        viewHighScoreLink.innerHTML = "<a href=#link-to-high-score id=\"view-high-score\">View High Scores</a>";
         /*>--------------Modify later to include score page-------------------<*/ 
         headerOfPage.prepend(viewHighScoreLink);
     }
@@ -36,6 +62,9 @@ var viewTimer =
 var mainPage = {
 
     showMainPage: function () {
+    clearPageElements();
+    responseOfPage.innerHTML = " ";
+    timerVal = 50;
     viewHighScoreLink.showHighScoreLink();
     viewTimer.showTimer("00:00");
 
@@ -53,7 +82,7 @@ var mainPage = {
     startQuizButton.textContent = "Start Quiz";
     startQuizButton.className = "start-button";
 
-    mainOfPage.appendChild(startQuizButton);
+    viewIntroduction.appendChild(startQuizButton);
     }
 }
 //mainPage.showMainPage(); //----> function to show main page
@@ -62,6 +91,10 @@ var mainPage = {
 var quizPage = {
     
     showQuestion: function (question,answerList) {
+    clearPageElements();
+    viewHighScoreLink.showHighScoreLink();
+    viewTimer.showTimer("00:00");
+
     var quizQuestion = document.createElement("div");
     quizQuestion.className = "quiz-question";
     quizQuestion.innerHTML = "<h1\">"+question+"</h1>";
@@ -70,31 +103,21 @@ var quizPage = {
 
     var quizAnswerList = document.createElement("ol");
     quizAnswerList.className = "quiz-answers";
-    quizAnswerList.innerHTML = "<li><button>"+answerList[0]+"</button></li>"+"<li><button>"+answerList[1]+"</button></li>"+"<li><button>"+answerList[2]+"</button></li>"+"<li><button>"+answerList[3]+"</button></li>";
+
+    for (i=0; i < answerList.length; i++){
+    quizAnswerList.innerHTML += "<li><button class=\"answer-button\">"+answerList[i]+"</button></li>";
+    }
 
     mainOfPage.appendChild(quizAnswerList);
-    },
-
-    showResponse: function (response) {
-    var responseText;
-
-    if (response === true)
-    { responseText = "Correct"; }
-    else if (response === false)
-    { responseText = "Wrong"; }
-    else if (response === null)
-    { responseText = ""; }
 
     var quizResponse = document.createElement("div");
     quizResponse.className = "quiz-response";
-    quizResponse.innerHTML = "<p>"+responseText+"</P>";
 
-    mainOfPage.appendChild(quizResponse);
+    responseOfPage.appendChild(quizResponse);
     }
 }
-//quizPage.showQuestion(questionItem,answerListItem); //----> function to show quiz page
-//quizPage.showResponse(response[2]);
-
+// quizPage.showQuestion(questionItem,answerListItem); //----> function to show quiz page
+// quizPage.showResponse(response[2]);
 
 //Initializes results page elements
 var resultsPage = {
@@ -102,6 +125,8 @@ var resultsPage = {
     viewUserName: document.createElement("input"),
 
     showResults: function (userScore) {
+        
+        responseOfPage.innerHTML = " ";
         viewHighScoreLink.showHighScoreLink();
         viewTimer.showTimer("00:00");
 
@@ -139,6 +164,8 @@ var resultsPage = {
 var highScorePage = {
     
     showScoresList: function (highScoreList) {
+        clearPageElements();
+        responseOfPage.innerHTML = " ";
         var highScoreTitle = document.createElement("h1");
         highScoreTitle.className = "high-score-title";
         highScoreTitle.textContent = "High scores";
@@ -147,14 +174,11 @@ var highScorePage = {
 
         var highScoreList = document.createElement("ol");
         highScoreList.className = "quiz-answers";
-        var listString = "";
 
         for (var i = 0; i < scoreList.length; i++)
-        { 
-           listString += ("<li>"+scoreList[i]+"</li>");
+        { highScoreList.innerHTML += ("<li>"+scoreList[i]+"</li>");
         }
 
-        highScoreList.innerHTML = listString;
         mainOfPage.appendChild(highScoreList);
 
         var returnButton = document.createElement("button");
@@ -170,22 +194,46 @@ var highScorePage = {
         mainOfPage.appendChild(clearHighScore);
     }
 }
+
+var executeQuiz = function(userAnswered)
+{
+    if (timerVal > 0 && quesNum < currentQuestion.length)
+    {
+        if (userAnswered === currentAnswer[quesNum])
+        {   
+            responseOfPage.innerHTML = " ";
+            responseOfPage.innerHTML = "<h2>Correct!</h2>";
+        }
+        else
+        {
+            responseOfPage.innerHTML = " ";
+            responseOfPage.innerHTML = "<h2>Wrong!</h2>";
+            timerVal-=10;
+        }
+        quesNum++;
+        quizPage.showQuestion(currentQuestion[quesNum],currentAnswersList[quesNum]);
+    }
+    else if ( timerVal <= 0 && quesNum >= currentQuestion.length)
+    {
+        timerVal = 50;
+        quesNum = 0;
+        resultsPage.showResults(score);
+        resultsPage.enterName(name);
+    }
+    console.log(timerVal+" "+quesNum);
+    
+
+    // if main page is shown timer is set to beginning
+    //Quiz questions and answers are stored in objects
+}
+
+
 //highScorePage.showScoresList(scoreList);
 
 //WHEN no quiz is entered yet THEN "View High Scores" link is blank
     //Else a link takes you to a page to see the ranked scores (from local storage)
     //There is a button to restart (return to the main page)
     //There is a button to clear the list (clean the local storage)
-
-//Timer is at zero until event listenter for start button click is true
-    // if answer is false THEN timer is reduced
-    // if timer is at zero and quiz is unfinished then go to results page.
-    // if quiz last quiz has a returned answer THEN timer is set to zero
-    // if main page is shown timer is set to beginning
-
-//Quiz questions and answers are stored in objects
-//Each answer is mapped to a button event listener
-    //Answer response is then displayed
 
 //Only when last quiz is answered the accumulated scores are stored to local storage
     //else scores are counted for every correct answer
@@ -195,3 +243,27 @@ var highScorePage = {
 //Results page ask to show high scores (same page as "View High Scores" link or to to start over "Main intro page")
     //Ask user to enter name and submit
     //Show their score and highlight their name.
+
+//Start button for quiz to commence - event handler
+var startButtonHandler = function (event) {
+    if (event.target.matches(".start-button"))
+    {
+        clearPageElements();
+        document.getElementsByClassName("quiz-response").textContennt = " ";
+        quizPage.showQuestion(currentQuestion[quesNum],currentAnswersList[quesNum]);
+    }
+}
+
+var quizAnswerHandler = function (event) {
+    if (event.target.matches(".answer-button"))
+    {
+       executeQuiz((event.target.textContent).toString());
+    }
+}
+
+//-------------------------------------------------------///
+mainPage.showMainPage();
+
+
+mainOfPage.addEventListener("click",startButtonHandler);
+mainOfPage.addEventListener("click",quizAnswerHandler);
