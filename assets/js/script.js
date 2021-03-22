@@ -8,14 +8,14 @@ var clearPageElements = function () {
     mainOfPage.innerHTML = "";
 }
 
+//-------------------Questions and answers declarations and initialization
 var listOfQuestionsAnswers = [
-{ question:"What day is it?", answerList:["Monday","Tuesday","Wednesday","Sunday"], answer:"Sunday"},
-{ question:"What year is it?", answerList:["2018","2019","2020","2021"], answer:"2021"},
-{ question:"What month is it?", answerList:["Jan","Feb","Mar","Apr"], answer:"Mar"}, 
-{ question:"What is the fourth letter of the alphabet?", answerList:["a","b","c","d"], answer:"d"},
-{ question:"What is hour 14 on a 24 hour clock mean?", answerList:["1pm","2pm","3pm","4pm"], answer:"2pm"}]
+{ question:"What are the types of Pop up boxes available in JavaScript?", answerList:["Alert","Prompt","Confirm","All of the above"], answer:"All of the above"},
+{ question:"Which of the following is not a JavaScript Data Type?", answerList:["Undefined","Number","Boolean","Float"], answer:"Float"},
+{ question:"What does javascript use instead of == and !=?", answerList:["It uses bitwise checking","It uses === and !== instead","It uses equals() and notequals() instead","It uses equalto()"], answer:"It uses === and !== instead"}, 
+{ question:"Which symbol is used for comments in Javascript?", answerList:["^","//","$","!"], answer:"//"},
+{ question:"Which method receives the return value of setInterval() to cancel future invocations?", answerList:["clearInvocation()","cancelInvocation","clearInterval()","clear()"], answer:"clearInterval()"}]
  
-//-------------------
 var currentQuestion = []; //holds current question
 var currentAnswersList = []; //holds current answers list
 var currentAnswer = []; //holds current answer
@@ -28,22 +28,23 @@ for (const arrEl in listOfQuestionsAnswers)
 }
 //----------------
 
+//Environment variables for score,name,timer and number of questions
 var score = 0;
-var name = "";
+var name;
 var timerVal = 59;
 var quesNum = 0;
+var startTimer = false; //used to start the timer
 
 //creates HTML page element of the View High Score link
 var viewHighScoreLink = 
 {
     showHighScoreLink: function() { 
         var viewHighScoreLink = document.createElement("div");
-        viewHighScoreLink.innerHTML = "<a href=#link-to-high-score id=\"view-high-score\">View High Scores</a>";
+        viewHighScoreLink.innerHTML = "<button class=\"view-high-scores\">View High Scores</button>";
         /*>--------------Modify later to include score page-------------------<*/ 
         headerOfPage.prepend(viewHighScoreLink);
     }
 }
-//viewHighScoreLink.showHighScoreLink();
 
 //creates HTML page element of the timer
 var viewTimer = 
@@ -55,7 +56,6 @@ var viewTimer =
         headerOfPage.appendChild(viewTimer);
     }
 }
-//viewTimer.showTimer();
 
 //Initializes main page elements
 var mainPage = {
@@ -63,7 +63,6 @@ var mainPage = {
     showMainPage: function () {
     clearPageElements();
     responseOfPage.innerHTML = " ";
-    timerVal = 50;
     viewHighScoreLink.showHighScoreLink();
     viewTimer.showTimer(timerVal);
 
@@ -84,7 +83,6 @@ var mainPage = {
     viewIntroduction.appendChild(startQuizButton);
     }
 }
-//mainPage.showMainPage(); //----> function to show main page
 
 //Initializes quiz page elements
 var quizPage = {
@@ -115,8 +113,6 @@ var quizPage = {
     responseOfPage.appendChild(quizResponse);
     }
 }
-// quizPage.showQuestion(questionItem,answerListItem); //----> function to show quiz page
-// quizPage.showResponse(response[2]);
 
 //Initializes results page elements
 var resultsPage = {
@@ -151,8 +147,6 @@ var resultsPage = {
         viewUserName.appendChild(submitButton);
     }
 }
-//resultsPage.showResults(score); //---> function to show resultsPage
-//resultsPage.enterName(name);
 
 //Initialize high score page elements
 var highScorePage = {
@@ -160,25 +154,23 @@ var highScorePage = {
     showScoresList: function (scoreList) {
         clearPageElements();
         responseOfPage.innerHTML = " ";
+
         var highScoreTitle = document.createElement("h1");
         highScoreTitle.className = "high-score-title";
         highScoreTitle.textContent = "High scores";
 
         mainOfPage.prepend(highScoreTitle);
 
-        var highScoreList = document.createElement("ol");
-        highScoreList.className = "quiz-answers";
-        mainOfPage.appendChild(highScoreList);
-
         if (scoreList !== null)
         {
+            var highScoreList = document.createElement("ol");
+            highScoreList.className = "quiz-answers";
+            mainOfPage.appendChild(highScoreList);
+
             for (var i = 0; i < scoreList.length; i++)
             { 
                 highScoreList.innerHTML += ("<li>"+scoreList[i]+"</li>");
             }
-        }
-        else {
-            highScoreList.remove();
         }
 
         var returnButton = document.createElement("button");
@@ -194,7 +186,6 @@ var highScorePage = {
         mainOfPage.appendChild(clearHighScore);
     }
 }
-// showScoresList(); //--> function to show highScoresList
 
 var executeQuiz = function(userAnswered)
 {
@@ -214,46 +205,32 @@ var executeQuiz = function(userAnswered)
         quesNum++;
         return 0;
     }
-    // if main page is shown timer is set to beginning
-    //Quiz questions and answers are stored in objects
 }
-
-
-//highScorePage.showScoresList(scoreList);
-
-//WHEN no quiz is entered yet THEN "View High Scores" link is blank
-    //Else a link takes you to a page to see the ranked scores (from local storage)
-    //There is a button to restart (return to the main page)
-    //There is a button to clear the list (clean the local storage)
-
-//Only when last quiz is answered the accumulated scores are stored to local storage
-    //else scores are counted for every correct answer
-    //the faster the quiz ends 5 points are added.
-    //if the last question is answered THEN navigate to a results page
-
-//Results page ask to show high scores (same page as "View High Scores" link or to to start over "Main intro page")
-    //Ask user to enter name and submit
-    //Show their score and highlight their name.
 
 //Start button for quiz to commence - event handler
 var startButtonHandler = function (event) {
+    event.preventDefault(); //prevents browser refresh
     if (event.target.matches(".start-button"))
     {
         clearPageElements();
         document.getElementsByClassName("quiz-response").textContent = " ";
         quizPage.showQuestion(currentQuestion[quesNum],currentAnswersList[quesNum]);
+        startTimer = true;
     }
 }
 
 //checks user quiz response
 var quizAnswerHandler = function (event) {
+    event.preventDefault(); //prevents browser refresh
     if (event.target.matches(".answer-button"))
     {
         executeQuiz((event.target.textContent).toString());
+        score = timerVal;
         if (quesNum  >= currentQuestion.length)
         {
-            timerVal = 50;
+            timerVal = 59;
             quesNum = 0;
+            startTimer = false;
             resultsPage.showResults(score);
         }
         else { quizPage.showQuestion(currentQuestion[quesNum],currentAnswersList[quesNum]); }
@@ -286,6 +263,7 @@ var scoresFromLocalStorage = function (userName) {
 
 //submit button handler for the user name and score
 var submitScoreHandler = function (event) {
+    event.preventDefault(); //prevents browser refresh
     if (event.target.matches(".submit-name"))
     {
        name = document.querySelector("input[name='user-name']").value;
@@ -295,7 +273,7 @@ var submitScoreHandler = function (event) {
 
 //clears score board and local storage
 var clearScoresHandler = function (event) {
-
+    event.preventDefault(); //prevents browser refresh
     if (event.target.matches(".clear-button")) {
     localStorage.removeItem("player-score");
     highScorePage.showScoresList(null);
@@ -304,10 +282,29 @@ var clearScoresHandler = function (event) {
 
 //returns to main page and resets timer and questions value
 var returnMainPageHandler = function (event) {
+    event.preventDefault(); //prevents browser refresh
     if (event.target.matches(".return-button")) {
-    timerVal = 50;
+    timerVal = 59;
     quesNum = 0;
+    name = null;
+    score = 0;
+    startTimer = false;
     mainPage.showMainPage();
+    }
+}
+
+var highScoreLinkHandler  = function (event) {
+    if (event.target.matches(".view-high-scores")){
+        highScorePage.showScoresList(scoresFromLocalStorage(name));
+    }
+}
+
+var decrementScore = function () {
+    if (startTimer === true)
+    {
+    timerVal--;
+    document.getElementsByClassName(".timer-value").textContent = timerVal;
+    console.log(timerVal);
     }
 }
 
@@ -320,3 +317,5 @@ mainOfPage.addEventListener("click",quizAnswerHandler);
 mainOfPage.addEventListener("click",submitScoreHandler);
 mainOfPage.addEventListener("click",clearScoresHandler);
 mainOfPage.addEventListener("click",returnMainPageHandler);
+headerOfPage.addEventListener("click",highScoreLinkHandler);
+setInterval(decrementScore,1000);

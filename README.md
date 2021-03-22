@@ -25,6 +25,10 @@ This application will allow a user to test their knowledge on JavasScript fundam
 **References:** 
 For In function - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in
 How to clear textContent - https://stackoverflow.com/questions/22569678/how-to-change-textcontent-via-javascript
+Sort an array - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+DOM remove() - https://www.w3schools.com/jsref/met_element_remove.asp
+Storage.removeItem() - https://developer.mozilla.org/en-US/docs/Web/API/Storage/removeItem
+List of Javascript questions - https://letsfindcourse.com/technical-questions/javascript-mcq/javascript-mcq-questions
 
 **Live webpage link:** 
 
