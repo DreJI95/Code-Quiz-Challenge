@@ -51,7 +51,7 @@ var viewTimer =
 {
     showTimer: function(timer) { 
         var viewTimer = document.createElement("section");
-        viewTimer.innerHTML = "<div class=\"timer\">Timer: <span class=\"timer-value\">"+timer+"</span></div>";
+        viewTimer.innerHTML = "<div class=\"timer\">Timer: <span id=\"timer-value\">"+timer+"</span></div>";
 
         headerOfPage.appendChild(viewTimer);
     }
@@ -161,7 +161,7 @@ var highScorePage = {
 
         mainOfPage.prepend(highScoreTitle);
 
-        if (scoreList !== null)
+        if (scoreList)
         {
             var highScoreList = document.createElement("ol");
             highScoreList.className = "quiz-answers";
@@ -224,16 +224,28 @@ var quizAnswerHandler = function (event) {
     event.preventDefault(); //prevents browser refresh
     if (event.target.matches(".answer-button"))
     {
-        executeQuiz((event.target.textContent).toString());
-        score = timerVal;
-        if (quesNum  >= currentQuestion.length)
+        if (timerVal > 0)
         {
+            executeQuiz((event.target.textContent).toString());
+            score = timerVal;
+            if (quesNum  >= currentQuestion.length)
+            {
+                timerVal = 59;
+                quesNum = 0;
+                startTimer = false;
+                clearInterval();
+                resultsPage.showResults(score);
+            }
+            else { quizPage.showQuestion(currentQuestion[quesNum],currentAnswersList[quesNum]); }
+        }
+        else {
             timerVal = 59;
             quesNum = 0;
+            score = 0;
             startTimer = false;
+            clearInterval();
             resultsPage.showResults(score);
-        }
-        else { quizPage.showQuestion(currentQuestion[quesNum],currentAnswersList[quesNum]); }
+         }
     }
 }
 
@@ -241,6 +253,11 @@ var quizAnswerHandler = function (event) {
 var scoresFromLocalStorage = function (userName) {
 
     var fromScoreList = [""]; 
+    
+    if (!userName)
+    {
+        return null;
+    }
 
     if (localStorage.getItem("player-score") !== null)
     {
@@ -267,6 +284,8 @@ var submitScoreHandler = function (event) {
     if (event.target.matches(".submit-name"))
     {
        name = document.querySelector("input[name='user-name']").value;
+       clearInterval();
+       startTimer = false;
        highScorePage.showScoresList(scoresFromLocalStorage(name));
     }
 }
@@ -295,17 +314,18 @@ var returnMainPageHandler = function (event) {
 
 var highScoreLinkHandler  = function (event) {
     if (event.target.matches(".view-high-scores")){
+        clearInterval();
+        startTimer = false;
         highScorePage.showScoresList(scoresFromLocalStorage(name));
     }
 }
 
 var decrementScore = function () {
-    if (startTimer === true)
-    {
-    timerVal--;
-    document.getElementsByClassName(".timer-value").textContent = timerVal;
-    console.log(timerVal);
-    }
+        if (startTimer === true)
+        {
+        timerVal--;
+        document.getElementById("timer-value").textContent = timerVal;
+        }
 }
 
 //-------------------------------------------------------///
