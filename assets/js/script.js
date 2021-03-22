@@ -136,7 +136,7 @@ var resultsPage = {
 
         var viewUserName = document.createElement("div")
         viewUserName.className = "user-name"
-        viewUserName.innerHTML = "<label for=\"user-name\"></label><input type=\"text\" placeholder=\"Enter name here\" name=\"user-name\" id=\"user-name\" class=\"form-input\">";
+        viewUserName.innerHTML = "<label for=\"user-name\"></label><input type=\"text\" placeholder=\"Enter initials here\" name=\"user-name\" id=\"user-name\" class=\"form-input\">";
 
         mainOfPage.appendChild(viewUserName);
 
