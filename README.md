@@ -35,4 +35,8 @@ List of Javascript questions - https://letsfindcourse.com/technical-questions/ja
 
 **Repository link:** https://github.com/DreJI95/Code-Quiz-Challenge
 
+![CodeQuiz-image1](https://user-images.githubusercontent.com/76451565/111937164-8b824100-8a9d-11eb-9d5c-5f81460fec55.PNG)
+![CodeQuiz-image2](https://user-images.githubusercontent.com/76451565/111937167-8d4c0480-8a9d-11eb-8795-da65e0f60a3a.PNG)
+![CodeQuiz-image3](https://user-images.githubusercontent.com/76451565/111937170-8e7d3180-8a9d-11eb-9e75-5a1e3899b709.PNG)
+![CodeQuiz-image4](https://user-images.githubusercontent.com/76451565/111937176-8fae5e80-8a9d-11eb-98e4-07b2dc85eed2.PNG)
 
