@@ -30,7 +30,7 @@ for (const arrEl in listOfQuestionsAnswers)
 
 var score = 0;
 var name = "";
-var timerVal = 50;
+var timerVal = 59;
 var quesNum = 0;
 
 //creates HTML page element of the View High Score link
@@ -65,7 +65,7 @@ var mainPage = {
     responseOfPage.innerHTML = " ";
     timerVal = 50;
     viewHighScoreLink.showHighScoreLink();
-    viewTimer.showTimer("00:00");
+    viewTimer.showTimer(timerVal);
 
     var viewTitle = document.createElement("div");
     viewTitle.innerHTML = "<h1 class=\"introduction-header\">Code Quiz Challenge</h1>";
@@ -92,7 +92,7 @@ var quizPage = {
     showQuestion: function (question,answerList) {
     clearPageElements();
     viewHighScoreLink.showHighScoreLink();
-    viewTimer.showTimer("00:00");
+    viewTimer.showTimer(timerVal);
 
     var quizQuestion = document.createElement("div");
     quizQuestion.className = "quiz-question";
@@ -125,7 +125,7 @@ var resultsPage = {
         clearPageElements();
         responseOfPage.innerHTML = " ";
         viewHighScoreLink.showHighScoreLink();
-        viewTimer.showTimer("00:00");
+        viewTimer.showTimer(timerVal);
 
         var viewPageTitle = document.createElement("h1");
         viewPageTitle.textContent = "All done!";
@@ -168,12 +168,18 @@ var highScorePage = {
 
         var highScoreList = document.createElement("ol");
         highScoreList.className = "quiz-answers";
-
-        for (var i = 0; i < scoreList.length; i++)
-        { highScoreList.innerHTML += ("<li>"+scoreList[i]+"</li>");
-        }
-
         mainOfPage.appendChild(highScoreList);
+
+        if (scoreList !== null)
+        {
+            for (var i = 0; i < scoreList.length; i++)
+            { 
+                highScoreList.innerHTML += ("<li>"+scoreList[i]+"</li>");
+            }
+        }
+        else {
+            highScoreList.remove();
+        }
 
         var returnButton = document.createElement("button");
         returnButton.className = "return-button";
@@ -239,6 +245,7 @@ var startButtonHandler = function (event) {
     }
 }
 
+//checks user quiz response
 var quizAnswerHandler = function (event) {
     if (event.target.matches(".answer-button"))
     {
@@ -253,27 +260,31 @@ var quizAnswerHandler = function (event) {
     }
 }
 
+// stores scores to local storage
 var scoresFromLocalStorage = function (userName) {
 
     var fromScoreList = [""]; 
 
     if (localStorage.getItem("player-score") !== null)
     {
-        fromScoreList.push(localStorage.getItem("player-score"));
-        console.log(fromScoreList);
-        fromScoreList.push(userName+": "+score);
-        localStorage.setItem("player-score", JSON.stringify(fromScoreList));
-        console.log(fromScoreList);
-        return (fromScoreList);
-    }
-    console.log(fromScoreList);
-    fromScoreList[0] = (userName+": "+score).toString();
-    localStorage.setItem("player-score", JSON.stringify(fromScoreList));
+        fromScoreList[0] = (userName+": "+score).toString();
 
-    console.log(fromScoreList);
+        var arrObj = JSON.parse(localStorage.getItem("player-score"));
+
+        for (const i in arrObj){
+        fromScoreList.push(arrObj[i]);
+        }
+    }
+    else
+    {
+    fromScoreList[0] = (userName+": "+score).toString();
+    }
+
+    localStorage.setItem("player-score", JSON.stringify(fromScoreList));
     return (fromScoreList);
 }
 
+//submit button handler for the user name and score
 var submitScoreHandler = function (event) {
     if (event.target.matches(".submit-name"))
     {
@@ -282,10 +293,23 @@ var submitScoreHandler = function (event) {
     }
 }
 
-// var scoreFromLocalStorage = function () {
-//     savedTasks = localStorage.getItem("tasks");
-//     savedTasks = JSON.parse(savedTasks);
-// }
+//clears score board and local storage
+var clearScoresHandler = function (event) {
+
+    if (event.target.matches(".clear-button")) {
+    localStorage.removeItem("player-score");
+    highScorePage.showScoresList(null);
+    }
+}
+
+//returns to main page and resets timer and questions value
+var returnMainPageHandler = function (event) {
+    if (event.target.matches(".return-button")) {
+    timerVal = 50;
+    quesNum = 0;
+    mainPage.showMainPage();
+    }
+}
 
 //-------------------------------------------------------///
 mainPage.showMainPage();
@@ -294,3 +318,5 @@ mainPage.showMainPage();
 mainOfPage.addEventListener("click",startButtonHandler);
 mainOfPage.addEventListener("click",quizAnswerHandler);
 mainOfPage.addEventListener("click",submitScoreHandler);
+mainOfPage.addEventListener("click",clearScoresHandler);
+mainOfPage.addEventListener("click",returnMainPageHandler);
