@@ -29,8 +29,7 @@ for (const arrEl in listOfQuestionsAnswers)
 //----------------
 
 var score = 0;
-var name = "Andre";
-var scoreList = [""];
+var name = "";
 var timerVal = 50;
 var quesNum = 0;
 
@@ -121,8 +120,6 @@ var quizPage = {
 
 //Initializes results page elements
 var resultsPage = {
-    
-    viewUserName: document.createElement("input"),
 
     showResults: function (userScore) {
         clearPageElements();
@@ -141,29 +138,26 @@ var resultsPage = {
 
         mainOfPage.appendChild(viewUserScore);
 
-        this.viewUserName.className = "user-name"
-        this.viewUserName.innerHTML = "<label for=\"user-name\">Enter your name:</label><input type=\"text\" placeholder=\"Enter name here\" name=\"user-name\" id=\"user-name\" class=\"form-input\">";
+        var viewUserName = document.createElement("div")
+        viewUserName.className = "user-name"
+        viewUserName.innerHTML = "<label for=\"user-name\"></label><input type=\"text\" placeholder=\"Enter name here\" name=\"user-name\" id=\"user-name\" class=\"form-input\">";
 
-        mainOfPage.appendChild(this.viewUserName);
+        mainOfPage.appendChild(viewUserName);
 
         var submitButton = document.createElement("button");
         submitButton.className = "submit-name";
         submitButton.textContent = "Submit";
 
-        mainOfPage.appendChild(submitButton);
-    },
-
-    enterName: function (userName){
-        this.viewUserName.value = userName;
+        viewUserName.appendChild(submitButton);
     }
 }
-//resultsPage.showResults(score);
+//resultsPage.showResults(score); //---> function to show resultsPage
 //resultsPage.enterName(name);
 
 //Initialize high score page elements
 var highScorePage = {
     
-    showScoresList: function (highScoreList) {
+    showScoresList: function (scoreList) {
         clearPageElements();
         responseOfPage.innerHTML = " ";
         var highScoreTitle = document.createElement("h1");
@@ -194,6 +188,7 @@ var highScorePage = {
         mainOfPage.appendChild(clearHighScore);
     }
 }
+// showScoresList(); //--> function to show highScoresList
 
 var executeQuiz = function(userAnswered)
 {
@@ -239,7 +234,7 @@ var startButtonHandler = function (event) {
     if (event.target.matches(".start-button"))
     {
         clearPageElements();
-        document.getElementsByClassName("quiz-response").textContennt = " ";
+        document.getElementsByClassName("quiz-response").textContent = " ";
         quizPage.showQuestion(currentQuestion[quesNum],currentAnswersList[quesNum]);
     }
 }
@@ -253,10 +248,44 @@ var quizAnswerHandler = function (event) {
             timerVal = 50;
             quesNum = 0;
             resultsPage.showResults(score);
-            resultsPage.enterName(name); }
+        }
         else { quizPage.showQuestion(currentQuestion[quesNum],currentAnswersList[quesNum]); }
     }
 }
+
+var scoresFromLocalStorage = function (userName) {
+
+    var fromScoreList = [""]; 
+
+    if (localStorage.getItem("player-score") !== null)
+    {
+        fromScoreList.push(localStorage.getItem("player-score"));
+        console.log(fromScoreList);
+        fromScoreList.push(userName+": "+score);
+        localStorage.setItem("player-score", JSON.stringify(fromScoreList));
+        console.log(fromScoreList);
+        return (fromScoreList);
+    }
+    console.log(fromScoreList);
+    fromScoreList[0] = (userName+": "+score).toString();
+    localStorage.setItem("player-score", JSON.stringify(fromScoreList));
+
+    console.log(fromScoreList);
+    return (fromScoreList);
+}
+
+var submitScoreHandler = function (event) {
+    if (event.target.matches(".submit-name"))
+    {
+       name = document.querySelector("input[name='user-name']").value;
+       highScorePage.showScoresList(scoresFromLocalStorage(name));
+    }
+}
+
+// var scoreFromLocalStorage = function () {
+//     savedTasks = localStorage.getItem("tasks");
+//     savedTasks = JSON.parse(savedTasks);
+// }
 
 //-------------------------------------------------------///
 mainPage.showMainPage();
@@ -264,3 +293,4 @@ mainPage.showMainPage();
 
 mainOfPage.addEventListener("click",startButtonHandler);
 mainOfPage.addEventListener("click",quizAnswerHandler);
+mainOfPage.addEventListener("click",submitScoreHandler);
