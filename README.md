@@ -33,7 +33,7 @@ List of Javascript questions - https://letsfindcourse.com/technical-questions/ja
 **Live webpage link:** https://dreji95.github.io/code-quiz-challenge/
 
 
-**Repository link:** https://github.com/DreJI95/Code-Quiz-Challenge
+**Repository link:** https://github.com/DreJI95/code-quiz-challenge
 
 ![CodeQuizPseudoCode](https://user-images.githubusercontent.com/76451565/111937747-cc2e8a00-8a9e-11eb-8284-639b6676735a.png)
 ![CodeQuiz-image1](https://user-images.githubusercontent.com/76451565/111937164-8b824100-8a9d-11eb-9d5c-5f81460fec55.PNG)
